@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="num-check.css">
+</head>
+<body>
+
+<ul class="tab-bar">
+  <li data-num="1" class="tab wave dark">CHECK</li>
+  <li data-num="2" class="tab wave dark">ABOUT</li>
+  <div class="indicator"></div>
+</ul>
+<div class="wrapper">
+    <div class="material-block"></div>
+<form action="#" class="form">
+  <div class="row">
+<input name="nemail" type="nemail" placeholder="" id="nemail" pattern="[A-Z][A-Z]-[0-9]{6}" maxlength="9">
+    <div class="row-effect"></div>
+    <label for="nemail" class="label">TrackID</label>
+    <p class="input-error">Error, expected AA-000000</p>
+	<p></p>
+  </div>
+</form>
+    <div class="material-circle" onclick=getstatus() ></div>
+<div id="befresponse" class="befresponse"> <h1>Lets start</h1> </div>
+<div id="response" class="response"></div>
+
+</div>
+
+<footer>
+	<div id="counter">Load counter:</div>
+      <p>
+	  <div id="siteAds">Ads</div>
+        [trackid-multicloud-demo]<br>
+        Created by <span class="nickname">Alex Romanenkov</span>
+      </p>
+</footer>
+
+<div class="cd-popup" role="alert">
+	<div class="cd-popup-container">
+		<p>Please enter second code</p>
+<form action="#0" class="form2 row2">
+  <div class="cd-popup-container">
+<input name="code" type="code" placeholder="" id="code" pattern="[0-9]{6}" maxlength="5">
+    <div class="row-effect"></div>
+    <label for="code" class="label"></label>
+</form>
+<a href="#1" class="123" >Send</a>
+</div>
+		<a href="#0" class="cd-popup-close img-replace">Close</a>
+	</div> <!-- cd-popup-container -->
+</div> <!-- cd-popup -->
+
+
+<script type="text/javascript">
+	var CharTimeout = 500; // скорость печатания
+	var StoryTimeout = 2000; // время ожидания перед переключением
+
+	var Summaries = new Array();
+	var SiteLinks = new Array();
+
+		Summaries[0] = 'GCP';
+		Summaries[1] = 'AWS';
+		Summaries[2] = 'Python';
+		Summaries[3] = 'GO';
+		Summaries[4] = 'IIS';
+		Summaries[5] = 'NGINX';
+		Summaries[6] = 'NODEJS';
+	function startTicker(){
+		massiveItemCount =  Number(Summaries.length); //количество элементов массива
+		// Определяем значения запуска
+		CurrentStory     = -1;
+		CurrentLength    = 0;
+		// Расположение объекта
+		AnchorObject     = document.getElementById("siteAds");
+		runTheTicker();     
+	}
+	// Основной цикл тиккера
+	function runTheTicker(){
+		var myTimeout;  
+		// Переход к следующему элементу
+		if(CurrentLength == 0){
+			CurrentStory++;
+			CurrentStory      = CurrentStory % massiveItemCount;
+			StorySummary      = Summaries[CurrentStory].replace(/"/g,'-');      
+			AnchorObject.href = SiteLinks[CurrentStory];
+		}
+		// Располагаем текущий текст в анкор с печатанием
+		AnchorObject.innerHTML = StorySummary.substring(0,CurrentLength) + znak();
+		// Преобразуем длину для подстроки и определяем таймер
+		if(CurrentLength != StorySummary.length){
+			CurrentLength++;
+			myTimeout = CharTimeout;
+		} else {
+			CurrentLength = 0;
+			myTimeout = StoryTimeout;
+		}
+		// Повторяем цикл с учетом задержки
+		setTimeout("runTheTicker()", myTimeout);
+	}
+	// Генератор подстановки знака
+	function znak(){
+		if(CurrentLength == StorySummary.length) return "";
+		else return "|";
+	}
+
+	startTicker();
+</script>
+<script>
+var waveBtn = (function () {
+  'use strict';
+  var btn = document.querySelectorAll('.wave'),
+      tab = document.querySelector('.tab-bar'),
+      indicator = document.querySelector('.indicator'),
+      indi = 0;
+  indicator.style.marginLeft = indi + 'px';
+
+  for(var i = 0; i < btn.length; i++) {
+    btn[i].onmousedown = function (e) {
+      var newRound = document.createElement('div'),x,y;
+
+      newRound.className = 'cercle';
+      this.appendChild(newRound);
+
+      x = e.pageX - this.offsetLeft;
+      y = e.pageY - this.offsetTop;
+
+      newRound.style.left = x + "px";
+      newRound.style.top = y + "px";
+      newRound.className += " anim";
+
+      indicator.style.marginLeft = indi + (this.dataset.num-1) * 150 + 'px';
+
+      setTimeout(function() {
+        newRound.remove();
+      }, 1200);
+    };
+  }
+}());
+</script>
+<script>
+ function getstatus(){
+	var xhr = new XMLHttpRequest();
+	document.getElementById('befresponse').innerHTML = '';
+	xhr.open('GET', 'http://192.168.1.120/app/ticket-booking-service/v1/venue/seats', false);
+	xhr.send();
+	if (xhr.status != 200) {
+		console.log( xhr.status + ': ' + xhr.statusText ); 
+	} else {
+	document.getElementById('response').innerHTML = "<p>Current status:</p>"+xhr.responseText;
+	}
+	}
+</script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+<script>
+jQuery(document).ready(function($){
+	//open popup
+	$('.material-circle').on('click', function(event){
+		event.preventDefault();
+		$('.cd-popup').addClass('is-visible');
+	});
+	
+	//close popup
+	$('.cd-popup').on('click', function(event){
+		if( $(event.target).is('.cd-popup-close') || $(event.target).is('.cd-popup') || $(event.target).is('.123') ) {
+			event.preventDefault();
+			$(this).removeClass('is-visible');
+		}
+	});
+	//close popup when clicking the esc keyboard button
+	$(document).keyup(function(event){
+    	if(event.which=='27'){
+    		$('.cd-popup').removeClass('is-visible');
+	    }
+    });
+});
+</script>
+
+</body>
+</html>
